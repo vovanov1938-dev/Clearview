@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClearView — AR Filter</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0A0A0F; font-family: -apple-system, 'Helvetica Neue', sans-serif; color: #EAEAEA; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding-bottom: 60px; }
+.wrap { width: 100%; max-width: 420px; padding: 0 20px; }
+.hdr { padding-top: 28px; }
+.hdr-top { display: flex; align-items: center; justify-content: space-between; }
+.brand-sub { font-size: 10px; letter-spacing: 3px; color: #444; text-transform: uppercase; margin-bottom: 3px; }
+.brand { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+.logo { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg,#00D2FF,#7B2FF7); display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 0 20px rgba(123,47,247,.4); }
+.statusbar { margin-top: 16px; background: #13131A; border-radius: 14px; padding: 11px 16px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #1E1E2E; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: #00FF88; box-shadow: 0 0 8px #00FF88; margin-right: 8px; }
+.sl { display: flex; align-items: center; font-size: 13px; color: #AAA; }
+.sr { font-size: 13px; color: #7B2FF7; font-weight: 600; }
+.profiles { margin-top: 10px; display: flex; gap: 6px; }
+.pbtn { flex: 1; padding: 7px 2px; border-radius: 10px; cursor: pointer; font-size: 11px; font-weight: 600; border: 1px solid #1E1E2E; background: #13131A; color: #555; }
+.pbtn.on { background: linear-gradient(135deg,#7B2FF7,#00D2FF); color: #fff; border-color: transparent; }
+.tabs { width: 100%; max-width: 420px; padding: 18px 20px 0; display: flex; gap: 2px; }
+.tbtn { flex: 1; padding: 9px 2px; border-radius: 10px; border: none; cursor: pointer; background: transparent; color: #555; font-size: 12px; border-bottom: 2px solid transparent; }
+.tbtn.on { background: #1E1E2E; color: #fff; font-weight: 600; border-bottom: 2px solid #7B2FF7; }
+.content { width: 100%; max-width: 420px; padding: 14px 20px 0; }
+.sec { font-size: 11px; color: #555; margin-bottom: 10px; letter-spacing: 1px; text-transform: uppercase; }
+.panel { display: none; }
+.panel.on { display: block; }
+.card { background: #13131A; border-radius: 14px; padding: 16px; margin-bottom: 8px; border: 1px solid #1E1E2E; cursor: pointer; transition: all .2s; }
+.drow { display: flex; align-items: center; justify-content: space-between; }
+.dico { width: 40px; height: 40px; border-radius: 11px; background: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 19px; margin-right: 10px; flex-shrink: 0; }
+.dname { font-size: 15px; font-weight: 600; color: #888; }
+.ddesc { font-size: 12px; color: #555; margin-top: 2px; }
+.dradio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #333; background: transparent; flex-shrink: 0; transition: all .2s; }
+.caps { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; }
+.cap { padding: 3px 9px; border-radius: 7px; font-size: 11px; font-weight: 500; }
+.ok { background: #00FF8814; color: #00FF88; border: 1px solid #00FF8830; }
+.no { background: #FF444414; color: #FF4444; border: 1px solid #FF444430; }
+.warn { margin-top: 10px; padding: 9px 12px; border-radius: 9px; background: #FF990011; border: 1px solid #FF990033; font-size: 12px; color: #FF9900; line-height: 1.5; display: none; }
+.infobox { margin-top: 6px; background: #13131A; border-radius: 13px; padding: 13px 15px; border: 1px solid #1E1E2E; font-size: 13px; color: #555; line-height: 1.6; }
+.ccard { background: #13131A; border-radius: 13px; padding: 11px 13px; margin-bottom: 7px; border: 1px solid #1E1E2E; transition: all .2s; }
+.crow { display: flex; align-items: center; }
+.cico { width: 34px; height: 34px; border-radius: 9px; background: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 16px; margin-right: 9px; flex-shrink: 0; transition: all .2s; }
+.cname { font-size: 14px; font-weight: 500; color: #555; flex: 1; }
+.cml { font-size: 11px; margin-top: 2px; }
+.crm { background: none; border: none; color: #2A2A2A; cursor: pointer; font-size: 14px; padding: 0 6px; margin-right: 3px; }
+.cmodes { display: flex; gap: 6px; margin-top: 8px; }
+.mbtn { flex: 1; padding: 6px; border-radius: 8px; cursor: pointer; font-size: 12px; background: #1A1A1A; color: #444; border: 1px solid #222; transition: all .2s; }
+.mbtn.mh { background: #FF6B6B22; color: #FF6B6B; border-color: #FF6B6B44; font-weight: 600; }
+.mbtn.mo { background: #00CEC922; color: #00CEC9; border-color: #00CEC944; font-weight: 600; }
+.tgl { width: 46px; height: 26px; border-radius: 13px; background: #1E1E2E; position: relative; cursor: pointer; flex-shrink: 0; transition: all .3s; }
+.tgl.on { background: linear-gradient(90deg,#7B2FF7,#00D2FF); box-shadow: 0 0 10px rgba(123,47,247,.35); }
+.knob { width: 20px; height: 20px; border-radius: 50%; background: #fff; position: absolute; top: 3px; left: 3px; transition: left .3s; box-shadow: 0 1px 4px rgba(0,0,0,.3); }
+.tgl.on .knob { left: 23px; }
+.zcard { background: #13131A; border-radius: 13px; padding: 14px; margin-bottom: 7px; display: flex; align-items: center; border: 1px solid #1E1E2E; transition: all .2s; }
+.zname { font-size: 14px; font-weight: 500; color: #555; }
+.zst { font-size: 12px; color: #444; margin-top: 2px; }
+.fmodes { display: flex; gap: 7px; margin-bottom: 18px; flex-wrap: wrap; }
+.fmbtn { flex: 1 0 40%; padding: 12px 7px; border-radius: 13px; cursor: pointer; background: #13131A; border: 1px solid #1E1E2E; color: #555; text-align: center; transition: all .2s; }
+.fmbtn.on { background: linear-gradient(135deg,#7B2FF722,#00D2FF22); border-color: #7B2FF7; color: #fff; }
+.fmi { font-size: 19px; margin-bottom: 3px; }
+.fml { font-size: 12px; font-weight: 500; }
+.fms { font-size: 10px; color: #7B2FF7; margin-top: 2px; }
+.srow { background: #13131A; border-radius: 13px; padding: 13px 15px; margin-bottom: 7px; display: flex; align-items: center; border: 1px solid #1E1E2E; }
+.slabel { font-size: 14px; font-weight: 500; }
+.ssub { font-size: 12px; color: #555; margin-top: 2px; }
+.addbtn { width: 100%; padding: 12px; border-radius: 13px; background: none; border: 1px dashed #2A2A3A; color: #555; font-size: 14px; cursor: pointer; }
+.addinput { background: #13131A; border-radius: 13px; padding: 13px 15px; border: 1px solid #7B2FF755; display: flex; gap: 8px; }
+.addinput input { flex: 1; background: none; border: none; outline: none; color: #EAEAEA; font-size: 15px; }
+.addinput button { background: linear-gradient(135deg,#7B2FF7,#00D2FF); border: none; border-radius: 8px; color: #fff; padding: 6px 13px; cursor: pointer; font-size: 13px; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="wrap hdr">
+  <div class="hdr-top">
+    <div><div class="brand-sub">AR Vision</div><div class="brand">ClearView</div></div>
+    <div class="logo">👓</div>
+  </div>
+  <div class="statusbar">
+    <div class="sl"><div class="dot"></div><span id="devStatus">Android XR connected</span></div>
+    <div class="sr" id="fcount">0 filters</div>
+  </div>
+  <div class="profiles">
+    <button class="pbtn on" onclick="setP(this)">🥗 Diet</button>
+    <button class="pbtn" onclick="setP(this)">💪 Sober</button>
+    <button class="pbtn" onclick="setP(this)">🌿 Vegan</button>
+    <button class="pbtn" onclick="setP(this)">⚙️ Custom</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tbtn on" onclick="switchTab('device',this)">Device</button>
+  <button class="tbtn" onclick="switchTab('categories',this)">Filters</button>
+  <button class="tbtn" onclick="switchTab('zones',this)">Store</button>
+  <button class="tbtn" onclick="switchTab('settings',this)">Settings</button>
+</div>
+
+<div class="content">
+
+<!-- DEVICE -->
+<div class="panel on" id="tab-device">
+  <div class="sec">Select your device</div>
+  <div class="card" id="dcard-android_xr" onclick="selDev(this,'android_xr','#34A853','Google Android XR')">
+    <div class="drow">
+      <div style="display:flex;align-items:center"><div class="dico" style="background:#34A85322">🟢</div><div><div class="dname" style="color:#fff">Google Android XR</div><div class="ddesc">Gemini AI · Project Aura · 2026</div></div></div>
+      <div class="dradio" id="dr-android_xr" style="border-color:#34A853;background:#34A853"></div>
+    </div>
+    <div class="caps"><span class="cap ok">✓ AR display</span><span class="cap ok">✓ Replacement</span><span class="cap ok">✓ Camera</span></div>
+  </div>
+  <div class="card" id="dcard-vision_pro" onclick="selDev(this,'vision_pro','#A2A2A2','Apple Vision Pro')">
+    <div class="drow">
+      <div style="display:flex;align-items:center"><div class="dico">⬛</div><div><div class="dname">Apple Vision Pro</div><div class="ddesc">visionOS · Full AR · Best replacement</div></div></div>
+      <div class="dradio" id="dr-vision_pro"></div>
+    </div>
+    <div class="caps"><span class="cap ok">✓ AR display</span><span class="cap ok">✓ Replacement</span><span class="cap ok">✓ Camera</span></div>
+  </div>
+  <div class="card" id="dcard-meta_rayban" onclick="selDev(this,'meta_rayban','#0082FB','Ray-Ban Meta')">
+    <div class="drow">
+      <div style="display:flex;align-items:center"><div class="dico">🔵</div><div><div class="dname">Ray-Ban Meta</div><div class="ddesc">Camera only · No display · Audio</div></div></div>
+      <div class="dradio" id="dr-meta_rayban"></div>
+    </div>
+    <div class="caps"><span class="cap no">✗ AR display</span><span class="cap no">✗ Replacement</span><span class="cap ok">✓ Camera</span></div>
+    <div class="warn" id="warn-meta_rayban">⚠️ Ray-Ban Meta has no display — visual replacement is not available. Audio notifications only.</div>
+  </div>
+  <div class="infobox">💡 To replace objects (wall instead of a store entrance) you need an AR display. <span style="color:#34A853">Android XR</span> and <span style="color:#A2A2A2">Apple Vision Pro</span> fully support this feature.</div>
+</div>
+
+<!-- FILTERS -->
+<div class="panel" id="tab-categories">
+  <div class="sec">Hide or show only</div>
+  <div id="catlist"></div>
+  <div id="addarea">
+    <button class="addbtn" onclick="showAddInput()">+ Add custom category</button>
+  </div>
+</div>
+
+<!-- STORE -->
+<div class="panel" id="tab-zones">
+  <div class="sec">Supermarket sections</div>
+  <div id="zonelist"></div>
+  <div class="infobox">💡 Glasses automatically detect store sections via signage and Google Maps integration</div>
+</div>
+
+<!-- SETTINGS -->
+<div class="panel" id="tab-settings">
+  <div class="sec">Replacement mode</div>
+  <div class="fmodes" id="fmodes"></div>
+  <div id="settinglist"></div>
+</div>
+
+</div>
+
+<script>
+const cats = [
+  {id:1,name:"Candy stores",icon:"🍰",on:true,color:"#FF6B6B",mode:"hide"},
+  {id:2,name:"Fast food",icon:"🍔",on:false,color:"#FF9F43",mode:"hide"},
+  {id:3,name:"Alcohol",icon:"🍷",on:true,color:"#A29BFE",mode:"hide"},
+  {id:4,name:"Tobacco",icon:"🚬",on:false,color:"#636E72",mode:"hide"},
+  {id:5,name:"Vegetarian restaurants",icon:"🥗",on:false,color:"#00CEC9",mode:"only"},
+  {id:6,name:"Chips & snacks",icon:"🍟",on:false,color:"#FDCB6E",mode:"hide"},
+];
+const zones = [
+  {id:1,name:"Sweets section",on:true},
+  {id:2,name:"Alcohol section",on:true},
+  {id:3,name:"Bakery section",on:false},
+  {id:4,name:"Checkout zone (snacks)",on:true},
+];
+const fmodes = [
+  {id:"replace",label:"Replace",icon:"🧱",sub:"wall / empty shelf"},
+  {id:"blur",label:"Blur",icon:"◎",sub:""},
+  {id:"gray",label:"Grayscale",icon:"◑",sub:""},
+  {id:"hide",label:"Hide",icon:"✕",sub:""},
+];
+const settingsData = [
+  {key:"notify",label:"Notifications",sub:"Subtle sound when object detected",on:true},
+  {key:"counter",label:"Show counter",sub:"How many objects are hidden",on:true},
+  {key:"night",label:"Night mode",sub:"Reduce filter brightness",on:false},
+  {key:"emergency",label:"Emergency view",sub:"Hold button 2 sec to pause",on:true},
+];
+let activeFmode = "replace";
+let selectedDev = "android_xr";
+let nextId = 10;
+
+function updateCount(){
+  const n = cats.filter(c=>c.on).length;
+  document.getElementById('fcount').textContent = n + (n===1?" filter":" filters");
+}
+
+function renderCats(){
+  const el = document.getElementById('catlist');
+  el.innerHTML = cats.map(c => `
+    <div class="ccard" id="cc-${c.id}" style="border-color:${c.on?c.color+'33':'#1E1E2E'}">
+      <div class="crow">
+        <div class="cico" style="background:${c.on?c.color+'22':'#1A1A1A'}">${c.icon}</div>
+        <div style="flex:1">
+          <div class="cname" style="color:${c.on?'#EAEAEA':'#555'}">${c.name}</div>
+          ${c.on?`<div class="cml" style="color:${c.mode==='only'?'#00CEC9':'#FF6B6B'}">${c.mode==='only'?'✓ Show only this':'✕ Hide this'}</div>`:''}
+        </div>
+        <button class="crm" onclick="removeCat(${c.id})">✕</button>
+        <div class="tgl ${c.on?'on':''}" onclick="toggleCat(${c.id})"><div class="knob"></div></div>
+      </div>
+      ${c.on?`<div class="cmodes">
+        <button class="mbtn ${c.mode==='hide'?'mh':''}" onclick="setCatMode(${c.id},'hide')">🚫 Hide</button>
+        <button class="mbtn ${c.mode==='only'?'mo':''}" onclick="setCatMode(${c.id},'only')">✅ Show only</button>
+      </div>`:''}
+    </div>
+  `).join('');
+  updateCount();
+}
+
+function renderZones(){
+  document.getElementById('zonelist').innerHTML = zones.map(z=>`
+    <div class="zcard" style="border-color:${z.on?'#7B2FF733':'#1E1E2E'}">
+      <div style="flex:1">
+        <div class="zname" style="color:${z.on?'#EAEAEA':'#555'}">${z.name}</div>
+        <div class="zst">${z.on?'Hidden in AR':'Visible'}</div>
+      </div>
+      <div class="tgl ${z.on?'on':''}" onclick="toggleZone(${z.id})"><div class="knob"></div></div>
+    </div>
+  `).join('');
+}
+
+function renderFmodes(){
+  document.getElementById('fmodes').innerHTML = fmodes.map(m=>`
+    <button class="fmbtn ${activeFmode===m.id?'on':''}" onclick="setFmode('${m.id}')">
+      <div class="fmi">${m.icon}</div>
+      <div class="fml">${m.label}</div>
+      ${m.sub?`<div class="fms">${m.sub}</div>`:''}
+    </button>
+  `).join('');
+}
+
+function renderSettings(){
+  document.getElementById('settinglist').innerHTML = settingsData.map(s=>`
+    <div class="srow">
+      <div style="flex:1"><div class="slabel">${s.label}</div><div class="ssub">${s.sub}</div></div>
+      <div class="tgl ${s.on?'on':''}" onclick="toggleSetting('${s.key}')"><div class="knob"></div></div>
+    </div>
+  `).join('');
+}
+
+function toggleCat(id){ const c=cats.find(x=>x.id===id); if(c) c.on=!c.on; renderCats(); }
+function removeCat(id){ const i=cats.findIndex(x=>x.id===id); if(i>-1) cats.splice(i,1); renderCats(); }
+function setCatMode(id,mode){ const c=cats.find(x=>x.id===id); if(c) c.mode=mode; renderCats(); }
+function toggleZone(id){ const z=zones.find(x=>x.id===id); if(z) z.on=!z.on; renderZones(); }
+function setFmode(id){ activeFmode=id; renderFmodes(); }
+function toggleSetting(key){ const s=settingsData.find(x=>x.key===key); if(s) s.on=!s.on; renderSettings(); }
+
+function selDev(el,id,color,name){
+  ['android_xr','vision_pro','meta_rayban'].forEach(d=>{
+    const card=document.getElementById('dcard-'+d);
+    const radio=document.getElementById('dr-'+d);
+    const warn=document.getElementById('warn-'+d);
+    card.style.borderColor='#1E1E2E'; card.style.boxShadow='none';
+    radio.style.borderColor='#333'; radio.style.background='transparent';
+    if(warn) warn.style.display='none';
+  });
+  el.style.borderColor=color; el.style.boxShadow=`0 0 14px ${color}33`;
+  const r=document.getElementById('dr-'+id);
+  r.style.borderColor=color; r.style.background=color;
+  const w=document.getElementById('warn-'+id);
+  if(w) w.style.display='block';
+  document.getElementById('devStatus').textContent=name+' connected';
+  selectedDev=id;
+}
+
+function switchTab(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('tab-'+id).classList.add('on');
+  btn.classList.add('on');
+}
+
+function setP(btn){
+  document.querySelectorAll('.pbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+function showAddInput(){
+  document.getElementById('addarea').innerHTML=`
+    <div class="addinput">
+      <input id="newinput" placeholder="Category name..." onkeydown="if(event.key==='Enter')addCat()">
+      <button onclick="addCat()">Add</button>
+    </div>`;
+  document.getElementById('newinput').focus();
+}
+
+function addCat(){
+  const v=document.getElementById('newinput').value.trim();
+  if(!v) return;
+  cats.push({id:nextId++,name:v,icon:"🔲",on:true,color:"#74B9FF",mode:"hide"});
+  renderCats();
+  document.getElementById('addarea').innerHTML=`<button class="addbtn" onclick="showAddInput()">+ Add custom category</button>`;
+}
+
+renderCats(); renderZones(); renderFmodes(); renderSettings(); selDev(document.getElementById("dcard-android_xr"),"android_xr","#34A853","Google Android XR");
+</script>
+</body>
+</html>
