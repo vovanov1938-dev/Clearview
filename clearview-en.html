@@ -17,11 +17,11 @@ body { background: #0A0A0F; font-family: -apple-system, 'Helvetica Neue', sans-s
 .dot { width: 8px; height: 8px; border-radius: 50%; background: #00FF88; box-shadow: 0 0 8px #00FF88; margin-right: 8px; }
 .sl { display: flex; align-items: center; font-size: 13px; color: #AAA; }
 .sr { font-size: 13px; color: #7B2FF7; font-weight: 600; }
-.profiles { margin-top: 10px; display: flex; gap: 6px; }
-.pbtn { flex: 1; padding: 7px 2px; border-radius: 10px; cursor: pointer; font-size: 11px; font-weight: 600; border: 1px solid #1E1E2E; background: #13131A; color: #555; }
+.profiles { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+.pbtn { flex: 1 0 22%; padding: 7px 2px; border-radius: 10px; cursor: pointer; font-size: 11px; font-weight: 600; border: 1px solid #1E1E2E; background: #13131A; color: #555; }
 .pbtn.on { background: linear-gradient(135deg,#7B2FF7,#00D2FF); color: #fff; border-color: transparent; }
-.tabs { width: 100%; max-width: 420px; padding: 18px 20px 0; display: flex; gap: 2px; }
-.tbtn { flex: 1; padding: 9px 2px; border-radius: 10px; border: none; cursor: pointer; background: transparent; color: #555; font-size: 12px; border-bottom: 2px solid transparent; }
+.tabs { width: 100%; max-width: 420px; padding: 18px 20px 0; display: flex; gap: 2px; flex-wrap: wrap; }
+.tbtn { flex: 1 0 18%; padding: 9px 2px; border-radius: 10px; border: none; cursor: pointer; background: transparent; color: #555; font-size: 11px; border-bottom: 2px solid transparent; }
 .tbtn.on { background: #1E1E2E; color: #fff; font-weight: 600; border-bottom: 2px solid #7B2FF7; }
 .content { width: 100%; max-width: 420px; padding: 14px 20px 0; }
 .sec { font-size: 11px; color: #555; margin-bottom: 10px; letter-spacing: 1px; text-transform: uppercase; }
@@ -69,6 +69,17 @@ body { background: #0A0A0F; font-family: -apple-system, 'Helvetica Neue', sans-s
 .addinput { background: #13131A; border-radius: 13px; padding: 13px 15px; border: 1px solid #7B2FF755; display: flex; gap: 8px; }
 .addinput input { flex: 1; background: none; border: none; outline: none; color: #EAEAEA; font-size: 15px; }
 .addinput button { background: linear-gradient(135deg,#7B2FF7,#00D2FF); border: none; border-radius: 8px; color: #fff; padding: 6px 13px; cursor: pointer; font-size: 13px; font-weight: 600; }
+.specCard { background: #13131A; border-radius: 14px; padding: 16px; margin-bottom: 10px; border: 1px solid #1E1E2E; }
+.specRow { display: flex; align-items: center; gap: 12px; }
+.specAvatar { width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg,#00CEC9,#74B9FF); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.specName { font-size: 15px; font-weight: 600; }
+.specRole { font-size: 12px; color: #555; margin-top: 2px; }
+.specBadge { margin-top: 10px; padding: 8px 12px; border-radius: 9px; background: #00FF8814; border: 1px solid #00FF8830; font-size: 12px; color: #00FF88; }
+.programCard { background: #13131A; border-radius: 13px; padding: 14px; margin-bottom: 8px; border: 1px solid #1E1E2E; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+.programIco { width: 38px; height: 38px; border-radius: 10px; background: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.programName { font-size: 14px; font-weight: 500; }
+.programSub { font-size: 11px; color: #555; margin-top: 2px; }
+.phraseItem { background: #0F0F16; border-radius: 10px; padding: 10px 12px; margin-bottom: 6px; font-size: 13px; color: #999; border-left: 2px solid #7B2FF7; }
 </style>
 </head>
 <body>
@@ -93,6 +104,7 @@ body { background: #0A0A0F; font-family: -apple-system, 'Helvetica Neue', sans-s
   <button class="tbtn on" onclick="switchTab('device',this)">Device</button>
   <button class="tbtn" onclick="switchTab('categories',this)">Filters</button>
   <button class="tbtn" onclick="switchTab('zones',this)">Store</button>
+  <button class="tbtn" onclick="switchTab('specialist',this)">Specialist</button>
   <button class="tbtn" onclick="switchTab('settings',this)">Settings</button>
 </div>
 
@@ -108,22 +120,29 @@ body { background: #0A0A0F; font-family: -apple-system, 'Helvetica Neue', sans-s
     </div>
     <div class="caps"><span class="cap ok">✓ AR display</span><span class="cap ok">✓ Replacement</span><span class="cap ok">✓ Camera</span></div>
   </div>
+  <div class="card" id="dcard-audio_glasses" onclick="selDev(this,'audio_glasses','#FBBC05','Audio Glasses (Gemini)')">
+    <div class="drow">
+      <div style="display:flex;align-items:center"><div class="dico">🎧</div><div><div class="dname">Android XR Audio Glasses</div><div class="ddesc">Available now · Fall 2026</div></div></div>
+      <div class="dradio" id="dr-audio_glasses"></div>
+    </div>
+    <div class="caps"><span class="cap no">✗ AR display</span><span class="cap ok">✓ Audio reminders</span><span class="cap ok">✓ Camera</span></div>
+  </div>
   <div class="card" id="dcard-vision_pro" onclick="selDev(this,'vision_pro','#A2A2A2','Apple Vision Pro')">
     <div class="drow">
-      <div style="display:flex;align-items:center"><div class="dico">⬛</div><div><div class="dname">Apple Vision Pro</div><div class="ddesc">visionOS · Full AR · Best replacement</div></div></div>
+      <div style="display:flex;align-items:center"><div class="dico">⬛</div><div><div class="dname">Apple Vision Pro</div><div class="ddesc">visionOS · development paused</div></div></div>
       <div class="dradio" id="dr-vision_pro"></div>
     </div>
     <div class="caps"><span class="cap ok">✓ AR display</span><span class="cap ok">✓ Replacement</span><span class="cap ok">✓ Camera</span></div>
+    <div class="warn" id="warn-vision_pro">⚠️ Apple has paused Vision Pro development after weak sales — a risky platform for long-term planning.</div>
   </div>
   <div class="card" id="dcard-meta_rayban" onclick="selDev(this,'meta_rayban','#0082FB','Ray-Ban Meta')">
     <div class="drow">
       <div style="display:flex;align-items:center"><div class="dico">🔵</div><div><div class="dname">Ray-Ban Meta</div><div class="ddesc">Camera only · No display · Audio</div></div></div>
       <div class="dradio" id="dr-meta_rayban"></div>
     </div>
-    <div class="caps"><span class="cap no">✗ AR display</span><span class="cap no">✗ Replacement</span><span class="cap ok">✓ Camera</span></div>
-    <div class="warn" id="warn-meta_rayban">⚠️ Ray-Ban Meta has no display — visual replacement is not available. Audio notifications only.</div>
+    <div class="caps"><span class="cap no">✗ AR display</span><span class="cap ok">✓ Audio reminders</span><span class="cap ok">✓ Camera</span></div>
   </div>
-  <div class="infobox">💡 To replace objects (wall instead of a store entrance) you need an AR display. <span style="color:#34A853">Android XR</span> and <span style="color:#A2A2A2">Apple Vision Pro</span> fully support this feature.</div>
+  <div class="infobox">💡 Visual replacement (wall instead of a store) requires display AR glasses — not mass-market until 2027–2028. <b>Audio reminders</b> work today on existing devices.</div>
 </div>
 
 <!-- FILTERS -->
@@ -142,9 +161,59 @@ body { background: #0A0A0F; font-family: -apple-system, 'Helvetica Neue', sans-s
   <div class="infobox">💡 Glasses automatically detect store sections via signage and Google Maps integration</div>
 </div>
 
+<!-- SPECIALIST -->
+<div class="panel" id="tab-specialist">
+  <div class="sec">Your specialist or program</div>
+
+  <div class="specCard" id="specConnected" style="display:none;">
+    <div class="specRow">
+      <div class="specAvatar">👩‍⚕️</div>
+      <div>
+        <div class="specName" id="specNameText">Dr. Anna Koskinen</div>
+        <div class="specRole">Psychologist · addiction specialist</div>
+      </div>
+    </div>
+    <div class="specBadge">✓ Connected · personalized audio phrases loaded</div>
+  </div>
+
+  <div id="specEmpty">
+    <div class="infobox" style="margin-bottom:14px;">
+      💡 Connect your psychologist, coach, or choose a ready-made program — they decide what support phrases you'll hear. ClearView does not generate therapeutic content on its own.
+    </div>
+
+    <div class="sec">Connect a specialist</div>
+    <div class="programCard" onclick="connectSpecialist('Dr. Anna Koskinen','Psychologist · addiction specialist','👩‍⚕️')">
+      <div class="programIco">👤</div>
+      <div><div class="programName">Invite your specialist</div><div class="programSub">By email or invite code</div></div>
+    </div>
+
+    <div class="sec" style="margin-top:18px;">Or choose a ready-made program</div>
+    <div class="programCard" onclick="connectSpecialist('12-Step Program','AA/NA community support','🤝')">
+      <div class="programIco">🤝</div>
+      <div><div class="programName">12-Step (AA / NA)</div><div class="programSub">Classic recovery support program</div></div>
+    </div>
+    <div class="programCard" onclick="connectSpecialist('CBT Self-Help','Cognitive behavioral techniques','🧠')">
+      <div class="programIco">🧠</div>
+      <div><div class="programName">CBT Self-Help</div><div class="programSub">Cognitive behavioral therapy</div></div>
+    </div>
+    <div class="programCard" onclick="connectSpecialist('My Clinic','Phrases uploaded via clinic portal','🏥')">
+      <div class="programIco">🏥</div>
+      <div><div class="programName">My Clinic</div><div class="programSub">Partner rehabilitation program</div></div>
+    </div>
+  </div>
+
+  <div id="phrasesPreview" style="display:none; margin-top:16px;">
+    <div class="sec">Loaded phrases (demo)</div>
+    <div class="phraseItem">"Noticed this place. You don't have to go in."</div>
+    <div class="phraseItem">"This urge is temporary. It will pass in a few minutes."</div>
+    <div class="phraseItem">"You're already stronger than this place."</div>
+    <button class="addbtn" onclick="disconnectSpecialist()" style="margin-top:8px;color:#FF6B6B;border-color:#FF6B6B33;">Disconnect and choose another</button>
+  </div>
+</div>
+
 <!-- SETTINGS -->
 <div class="panel" id="tab-settings">
-  <div class="sec">Replacement mode</div>
+  <div class="sec">Alert mode</div>
   <div class="fmodes" id="fmodes"></div>
   <div id="settinglist"></div>
 </div>
@@ -167,20 +236,21 @@ const zones = [
   {id:4,name:"Checkout zone (snacks)",on:true},
 ];
 const fmodes = [
-  {id:"replace",label:"Replace",icon:"🧱",sub:"wall / empty shelf"},
+  {id:"audio",label:"Audio reminder",icon:"🎙️",sub:"voice from specialist"},
+  {id:"replace",label:"Replace",icon:"🧱",sub:"wall / shelf (2027+)"},
   {id:"blur",label:"Blur",icon:"◎",sub:""},
-  {id:"gray",label:"Grayscale",icon:"◑",sub:""},
   {id:"hide",label:"Hide",icon:"✕",sub:""},
 ];
 const settingsData = [
   {key:"notify",label:"Notifications",sub:"Subtle sound when object detected",on:true},
-  {key:"counter",label:"Show counter",sub:"How many objects are hidden",on:true},
-  {key:"night",label:"Night mode",sub:"Reduce filter brightness",on:false},
-  {key:"emergency",label:"Emergency view",sub:"Hold button 2 sec to pause",on:true},
+  {key:"counter",label:"Show counter",sub:"How many objects flagged",on:true},
+  {key:"night",label:"Night mode",sub:"Reduce brightness / volume",on:false},
+  {key:"emergency",label:"Emergency pause",sub:"Hold button 2 sec to pause",on:true},
 ];
-let activeFmode = "replace";
-let selectedDev = "android_xr";
+let activeFmode = "audio";
+let selectedDev = null;
 let nextId = 10;
+let specConnected = false;
 
 function updateCount(){
   const n = cats.filter(c=>c.on).length;
@@ -248,7 +318,7 @@ function setFmode(id){ activeFmode=id; renderFmodes(); }
 function toggleSetting(key){ const s=settingsData.find(x=>x.key===key); if(s) s.on=!s.on; renderSettings(); }
 
 function selDev(el,id,color,name){
-  ['android_xr','vision_pro','meta_rayban'].forEach(d=>{
+  ['android_xr','audio_glasses','vision_pro','meta_rayban'].forEach(d=>{
     const card=document.getElementById('dcard-'+d);
     const radio=document.getElementById('dr-'+d);
     const warn=document.getElementById('warn-'+d);
@@ -294,7 +364,22 @@ function addCat(){
   document.getElementById('addarea').innerHTML=`<button class="addbtn" onclick="showAddInput()">+ Add custom category</button>`;
 }
 
-renderCats(); renderZones(); renderFmodes(); renderSettings(); selDev(document.getElementById("dcard-android_xr"),"android_xr","#34A853","Google Android XR");
-</script>
-</body>
-</html>
+function connectSpecialist(name, role, icon){
+  specConnected = true;
+  document.getElementById('specNameText').textContent = name;
+  document.querySelector('#specConnected .specRole').textContent = role;
+  document.querySelector('#specConnected .specAvatar').textContent = icon;
+  document.getElementById('specConnected').style.display = 'block';
+  document.getElementById('specEmpty').style.display = 'none';
+  document.getElementById('phrasesPreview').style.display = 'block';
+}
+
+function disconnectSpecialist(){
+  specConnected = false;
+  document.getElementById('specConnected').style.display = 'none';
+  document.getElementById('specEmpty').style.display = 'block';
+  document.getElementById('phrasesPreview').style.display = 'none';
+}
+
+renderCats(); renderZones(); renderFmodes(); renderSettings();
+selDev(document.getElementById("dcard-android_xr"),"android_xr","#34A853","Google Android XR");
